@@ -1,0 +1,60 @@
+# CAIDS — Cyber Attack Intrusion Detection System
+# .gitignore
+
+# ─── Build directories ─────────────────────────────────────────────────────
+build/
+Build/
+out/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+install_manifest.txt
+*.cmake
+!CMakeLists.txt
+
+# ─── Compiled binaries ──────────────────────────────────────────────────────
+caids_nids
+caids_collector
+*.exe
+*.out
+*.app
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+
+# ─── Object files ──────────────────────────────────────────────────────────
+*.o
+*.obj
+
+# ─── Capture output (can be large) ─────────────────────────────────────────
+*.pcap
+*.pcapng
+*.cap
+*.part
+
+# ─── Metadata logs (runtime output) ────────────────────────────────────────
+*.jsonl
+
+# ─── Log files ──────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ─── Editor / IDE files ─────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.suo
+*.user
+*.sln
+*.vcxproj
+*.vcxproj.filters
+.DS_Store
+Thumbs.db
+
+# ─── clangd / compile_commands ──────────────────────────────────────────────
+compile_commands.json
+.clangd/
+.cache/

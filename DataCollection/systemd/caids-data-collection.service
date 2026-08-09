@@ -1,0 +1,28 @@
+[Unit]
+Description=CAIDS Network Detection - Data Collection Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/caids_collector -c /etc/caids/collector.conf
+Restart=always
+RestartSec=5
+StartLimitIntervalSec=0
+
+# Run as an unprivileged service account but grant just the two
+# capabilities needed for raw packet capture, instead of running as root.
+User=caids
+Group=caids
+AmbientCapabilities=CAP_NET_RAW CAP_NET_ADMIN
+CapabilityBoundingSet=CAP_NET_RAW CAP_NET_ADMIN
+NoNewPrivileges=true
+
+# Hardening
+ProtectSystem=strict
+ReadWritePaths=/var/lib/caids /var/log/caids
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
