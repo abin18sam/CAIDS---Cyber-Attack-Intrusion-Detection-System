@@ -51,16 +51,95 @@ CAIDS_NetworkDetection/
 
 ---
 
-## 🔍 Module 1 — NetworkDetection (NIDS Engine)
+## 🛠️ Full CAIDS Pipeline
 
 ```
-         NETWORK DETECTION / NIDS
-                  │
-  ┌───────────────┼───────────────┐
-  ▼               ▼               ▼
-DATA COLLECTION  PACKET ANALYSIS  FLOW ANALYSIS
-PacketCapture.*  PacketAnalyzer.* FlowAnalyzer.*
+                         ┌─────────────────────┐
+                         │     CAIDS STARTS    │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                      ┌─────────────────────────┐
+                      │      DATA COLLECTION    │
+                      └────────────┬────────────┘
+                                   │
+              ┌────────────────────┼────────────────────┐
+              │                    │                    │
+              ▼                    ▼                    ▼
+       ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+       │   NETWORK    │     │   ENDPOINT   │     │   USB / HID  │
+       │    DATA      │     │    DATA      │     │    DATA      │
+       └──────┬───────┘     └──────┬───────┘     └──────┬───────┘
+              │                    │                    │
+              ▼                    ▼                    ▼
+       Packet / Flow        Process / Event       Device Identity
+         Features               Data                 Data
+                                   │
+                                   ▼
+                         ┌─────────────────────┐
+                         │ SOFTWARE KEYLOGGER  │
+                         │     DETECTION       │
+                         └──────────┬──────────┘
+                                    │
+                         ┌──────────┴──────────┐
+                         │                     │
+                         ▼                     ▼
+                  Keyboard Hook/API      Suspicious Process
+                    Indicators              Behavior
+                         │                     │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         Keylogger Risk Signal
+                                    │
+              ┌─────────────────────┼─────────────────────┐
+              │                     │                     │
+              ▼                     ▼                     ▼
+        Network Detection     Endpoint Detection    USB/HID Detection
+              │                     │                     │
+              └─────────────────────┼─────────────────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │ THREAT CORRELATION  │
+                         │      ENGINE         │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │    RISK SCORING     │
+                         └──────────┬──────────┘
+                                    │
+                    ┌───────────────┼───────────────┐
+                    │               │               │
+                    ▼               ▼               ▼
+                  LOW            MEDIUM       HIGH / CRITICAL
+                    │               │               │
+                    └───────────────┼───────────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │  ALERT GENERATION   │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │ REAL-TIME DASHBOARD │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │ INCIDENT TIMELINE   │
+                         │ & INVESTIGATION     │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         RESPONSE / ADMIN ACTION
 ```
+
+---
+
+## 🔍 Module 1 — NetworkDetection (NIDS Engine)
 
 ### What it does
 
@@ -129,14 +208,14 @@ sudo ./caids_nids -i eth0 -f "tcp or udp or icmp"
 ## 📦 Module 2 — DataCollection (24×7 Capture Service)
 
 ```
-  NETWORK DETECTION / NIDS
+  CAIDS PIPELINE
           │
           ▼
    DATA COLLECTION   ◄── this module
           │
      ┌────┴────┐
      ▼          ▼
- raw .pcap   metadata .jsonl    (fed to NetworkDetection module)
+ raw .pcap   metadata .jsonl    (fed into NetworkDetection & future modules)
 ```
 
 ### What makes it "24×7", not just "capture"
@@ -203,24 +282,6 @@ sudo ./build/caids_collector -c config/collector.conf
 | `reconnect_backoff_start_seconds` / `_max_seconds` | reconnect retry pacing |
 
 ---
-
-## 🛠️ Full Pipeline Flow
-
-```
-       [Live NIC / .pcap file]
-               │
-               ▼
-    ┌──────────────────────┐
-    │  DataCollection       │  caids_collector
-    │  (24×7 service)       │  → rotated .pcap + .jsonl files
-    └──────────┬───────────┘
-               │  .pcap files (atomic rename on rotation)
-               ▼
-    ┌──────────────────────┐
-    │  NetworkDetection     │  caids_nids -r <file>
-    │  (NIDS engine)        │  → real-time alerts to stdout / sink
-    └──────────────────────┘
-```
 
 The two modules are **independently usable**:
 - Run `caids_nids` directly on a live interface for interactive analysis.
