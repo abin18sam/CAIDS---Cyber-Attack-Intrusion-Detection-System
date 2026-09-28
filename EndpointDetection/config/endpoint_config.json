@@ -1,0 +1,71 @@
+{
+  "host_id": "HOST-001",
+  "monitor_interval_ms": 1000,
+  "log_file": "logs/endpoint_events.jsonl",
+  "rules": {
+    "suspicious_paths": [
+      "\\AppData\\Local\\Temp",
+      "\\Windows\\Temp",
+      "/tmp",
+      "/var/tmp",
+      "\\Users\\Public",
+      "\\Downloads"
+    ],
+    "protected_system_binaries": [
+      "svchost.exe",
+      "lsass.exe",
+      "csrss.exe",
+      "services.exe",
+      "smss.exe",
+      "wininit.exe",
+      "winlogon.exe"
+    ],
+    "expected_system_directory": "C:\\Windows\\System32",
+    "suspicious_parent_processes": [
+      "winword.exe",
+      "excel.exe",
+      "powerpnt.exe",
+      "acrord32.exe",
+      "acrobat.exe",
+      "outlook.exe",
+      "chrome.exe",
+      "firefox.exe",
+      "msedge.exe"
+    ],
+    "dangerous_child_processes": [
+      "cmd.exe",
+      "powershell.exe",
+      "pwsh.exe",
+      "cscript.exe",
+      "wscript.exe",
+      "mshta.exe",
+      "certutil.exe",
+      "vssadmin.exe",
+      "bitsadmin.exe"
+    ],
+    "suspicious_cli_keywords": [
+      "-enc",
+      "-encodedcommand",
+      "downloadstring",
+      "bypass",
+      "invoke-expression",
+      "iex",
+      "vssadmin delete shadows",
+      "certutil -urlcache",
+      "net user /add",
+      "wmic shadowcopy delete"
+    ]
+  },
+  "keylogger_detection": {
+    "enabled": true,
+    "scan_interval_ms": 3000,
+    "detect_hooks": true,
+    "detect_async_keystate": true,
+    "suspicious_hook_dlls": [
+      "hook.dll",
+      "kbdlog.dll",
+      "keylogger.dll",
+      "spy.dll"
+    ]
+  }
+}
